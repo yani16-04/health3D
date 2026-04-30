@@ -1,0 +1,110 @@
+/* ===============================
+   CONTACT SECTION
+================================== */
+
+.contact-section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 245, 196, 0.03),
+        rgba(0, 153, 255, 0.03)
+    );
+    border-top: 1px solid rgba(0, 245, 196, 0.1);
+    border-bottom: 1px solid rgba(0, 245, 196, 0.1);
+}
+
+.contact-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.contact-form {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 245, 196, 0.2);
+    border-radius: 16px;
+    color: #ffffff;
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #00f5c4;
+    box-shadow: 0 0 30px rgba(0, 245, 196, 0.25);
+    transform: translateY(-2px);
+}
+
+.contact-form textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+.contact-form .btn-primary {
+    width: 100%;
+    margin-top: 10px;
+    padding: 20px;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================== */
+
+@media (max-width: 768px) {
+    .contact-section {
+        padding: 80px 20px;
+    }
+
+    .contact-form {
+        gap: 18px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 18px 20px;
+        font-size: 13px;
+        border-radius: 14px;
+    }
+
+    .contact-form .btn-primary {
+        padding: 18px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-section {
+        padding: 60px 16px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 16px 18px;
+    }
+
+    .contact-form textarea {
+        min-height: 150px;
+    }
+}
