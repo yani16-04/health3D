@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VITALIS — Elevate Your Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep: #04080f;
+    --void: #070d1a;
+    --glow: #00f5c4;
+    --glow2: #0099ff;
+    --glow3: #9b59f5;
+    --warm: #ff6b35;
+    --text: #e8f4f0;
+    --muted: #7da8a0;
+    --card: rgba(0,245,196,0.04);
+    --border: rgba(0,245,196,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--glow);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+    box-shadow: 0 0 20px var(--glow), 0 0 40px rgba(0,245,196,0.3);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,245,196,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* Canvas */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Nav */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(4,8,15,0.9), transparent);
+    backdrop-filter: blur(10px);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: var(--glow);
+    text-transform: uppercase;
+  }
+  .logo span { color: var(--text); }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--glow); }
+  .nav-cta {
+    background: transparent;
+    border: 1px solid var(--glow);
+    color: var(--glow);
+    padding: 10px 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-cta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--glow);
+    transition: left 0.3s;
+    z-index: -1;
+  }
+  .nav-cta:hover { color: var(--deep); }
+  .nav-cta:hover::before { left: 0; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+  }
+  .hero-badge {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--glow);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-badge::before, .hero-badge::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--glow);
+    opacity: 0.5;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(64px, 10vw, 140px);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin-bottom: 32px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--glow);
+    display: block;
+    text-shadow: 0 0 60px rgba(0,245,196,0.4);
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    line-height: 2;
+    max-width: 500px;
+    margin-bottom: 56px;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-primary {
+    background: var(--glow);
+    color: var(--deep);
+    border: none;
+    padding: 16px 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 700;
+    box-shadow: 0 0 40px rgba(0,245,196,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 80px rgba(0,245,196,0.6);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(232,244,240,0.2);
+    padding: 16px 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover {
+    border-color: var(--glow);
+    color: var(--glow);
+  }
+
+  /* Scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    animation: float 2s ease-in-out infinite;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--glow), transparent);
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    position: relative; z-index: 1;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 40px 60px;
+    backdrop-filter: blur(10px);
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--glow);
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  /* Section layout */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 120px 60px;
+  }
+  .section-tag {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--glow);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 80px);
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 24px;
+  }
+  .section-title em { font-style: italic; color: var(--glow); }
+  .section-body {
+    font-size: 13px;
+    line-height: 2;
+    color: var(--muted);
+    max-width: 480px;
+  }
+
+  /* Services Grid */
+  .services {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+  }
+  .service-card {
+    background: var(--void);
+    padding: 56px 40px;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(to right, var(--glow), var(--glow2));
+    transform: scaleX(0);
+    transition: transform 0.4s;
+    transform-origin: left;
+  }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card:hover { background: rgba(0,245,196,0.03); }
+  .service-icon {
+    font-size: 36px;
+    margin-bottom: 28px;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(0,245,196,0.3));
+  }
+  .service-num {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(0,245,196,0.3);
+    margin-bottom: 12px;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .service-desc {
+    font-size: 12px;
+    line-height: 2;
+    color: var(--muted);
+  }
+
+  /* 3D Feature Section */
+  .feature-3d {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    padding: 120px 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .feature-visual {
+    position: relative;
+    height: 500px;
+    perspective: 1000px;
+  }
+  .cube-container {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px; height: 200px;
+    transform-style: preserve-3d;
+    animation: rotateCube 15s linear infinite;
+  }
+  @keyframes rotateCube {
+    0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+  }
+  .cube-face {
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(0,245,196,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    backdrop-filter: blur(5px);
+    background: rgba(0,245,196,0.02);
+  }
+  .cube-face.front  { transform: translateZ(100px); }
+  .cube-face.back   { transform: translateZ(-100px) rotateY(180deg); }
+  .cube-face.left   { transform: translateX(-100px) rotateY(-90deg); }
+  .cube-face.right  { transform: translateX(100px) rotateY(90deg); }
+  .cube-face.top    { transform: translateY(-100px) rotateX(90deg); }
+  .cube-face.bottom { transform: translateY(100px) rotateX(-90deg); }
+
+  .orbit-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px dashed rgba(0,245,196,0.15);
+    border-radius: 50%;
+    animation: orbit 8s linear infinite;
+  }
+  .orbit-ring:nth-child(1) { width: 320px; height: 320px; animation-duration: 8s; }
+  .orbit-ring:nth-child(2) { width: 440px; height: 440px; animation-duration: 12s; animation-direction: reverse; }
+  .orbit-ring:nth-child(3) { width: 560px; height: 560px; animation-duration: 20s; }
+
+  .orbit-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: var(--glow);
+    border-radius: 50%;
+    top: -4px; left: 50%;
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  @keyframes orbit {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* Feature list */
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 40px;
+  }
+  .feature-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    background: var(--card);
+  }
+  .feature-item:hover {
+    border-color: var(--glow);
+    background: rgba(0,245,196,0.05);
+    transform: translateX(8px);
+  }
+  .feature-item-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .feature-item-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .feature-item-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 2;
+  }
+
+  /* Testimonial */
+  .testimonials {
+    position: relative; z-index: 1;
+    padding: 120px 60px;
+    background: linear-gradient(135deg, rgba(0,245,196,0.03), rgba(0,153,255,0.03));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+  }
+  .testimonial-card {
+    padding: 40px;
+    border: 1px solid var(--border);
+    background: rgba(4,8,15,0.6);
+    position: relative;
+    transition: all 0.4s;
+  }
+  .testimonial-card:hover {
+    border-color: rgba(0,245,196,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .quote-mark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    color: var(--glow);
+    opacity: 0.2;
+    line-height: 0.7;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .quote-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 28px;
+    color: rgba(232,244,240,0.8);
+  }
+  .quote-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 1px solid var(--glow);
+  }
+  .author-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--glow);
+  }
+  .author-role {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-top: 60px;
+  }
+  .pricing-card {
+    background: var(--void);
+    padding: 56px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .pricing-card.featured {
+    background: linear-gradient(135deg, rgba(0,245,196,0.08), rgba(0,153,255,0.05));
+  }
+  .pricing-card.featured::after {
+    content: 'POPULAR';
+    position: absolute;
+    top: 20px; right: -30px;
+    background: var(--glow);
+    color: var(--deep);
+    font-size: 9px;
+    letter-spacing: 3px;
+    padding: 4px 40px;
+    transform: rotate(45deg);
+    font-weight: 700;
+  }
+  .plan-name {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .plan-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    color: var(--glow);
+    line-height: 1;
+  }
+  .plan-period {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .plan-feature {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+  }
+  .plan-feature::before { content: '→'; color: var(--glow); }
+  .plan-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid var(--glow);
+    background: transparent;
+    color: var(--glow);
+    transition: all 0.3s;
+  }
+  .pricing-card.featured .plan-btn {
+    background: var(--glow);
+    color: var(--deep);
+  }
+  .plan-btn:hover {
+    background: var(--glow);
+    color: var(--deep);
+  }
+
+  /* CTA Section */
+  .cta-section {
+    position: relative; z-index: 1;
+    padding: 160px 60px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,245,196,0.06), transparent 70%);
+    border-radius: 50%;
+  }
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 8vw, 100px);
+    font-weight: 300;
+    line-height: 0.95;
+    margin-bottom: 32px;
+    position: relative;
+  }
+  .cta-title em { font-style: italic; color: var(--glow); }
+
+  /* Footer */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    color: var(--glow);
+  }
+  .footer-copy {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+  .footer-links {
+    display: flex;
+    gap: 32px;
+  }
+  .footer-links a {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--glow); }
+
+  /* Utility */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 120px;
+    align-items: center;
+  }
+
+  /* Horizontal divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 0 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Glow lines */
+  .glow-line {
+    position: absolute;
+    background: linear-gradient(to right, transparent, var(--glow), transparent);
+    height: 1px;
+    opacity: 0.3;
+    animation: glowPulse 3s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Entrance animation */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- 3D Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Nav -->
+<nav>
+  <div class="logo">VITA<span>LIS</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#science">Science</a></li>
+    <li><a href="#testimonials">Stories</a></li>
+    <li><a href="#pricing">Plans</a></li>
+  </ul>
+  <button class="nav-cta">Begin Journey</button>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">Yanika'ss Wellness Platform</div>
+  <h1 class="hero-title">
+    Your Body<br>
+    <em>Reimagined</em>
+  </h1>
+  <p class="hero-sub">
+    Advanced biometric intelligence meets holistic wellness science.
+    Transform your health with precision protocols built for your unique biology.
+  </p>
+  <div class="hero-btns">
+    <button class="btn-primary">Start Your Assessment</button>
+    <button class="btn-outline">Watch the Method →</button>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="stats-bar fade-up">
+  <div class="stat-item">
+    <span class="stat-num" data-target="98">0</span>
+    <div class="stat-label">% Client Satisfaction</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="12">0</span>
+    <div class="stat-label">Biomarkers Tracked</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="50">0</span>
+    <div class="stat-label">K+ Lives Optimized</div>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-target="7">0</span>
+    <div class="stat-label">Pillars of Wellness</div>
+  </div>
+</div>
+
+<!-- Services -->
+<section class="section" id="services">
+  <div class="fade-up">
+    <div class="section-tag">/ What We Offer</div>
+    <h2 class="section-title">Seven <em>Pillars</em><br>of Vitality</h2>
+  </div>
+</section>
+
+<div class="services fade-up">
+  <div class="service-card">
+    <span class="service-num">01</span>
+    <span class="service-icon">🧬</span>
+    <div class="service-name">Genomic Mapping</div>
+    <p class="service-desc">Deep DNA analysis to uncover your unique predispositions and craft precision health protocols.</p>
+  </div>
+  <div class="service-card">
+    <span class="service-num">02</span>
+    <span class="service-icon">⚡</span>
+    <div class="service-name">Energy Optimization</div>
+    <p class="service-desc">Mitochondrial health protocols and metabolic tuning to sustain peak energy throughout the day.</p>
+  </div>
+  <div class="service-card">
+    <span class="service-num">03</span>
+    <span class="service-icon">🧠</span>
+    <div class="service-name">Neuro Performance</div>
+    <p class="service-desc">Cognitive enhancement programs combining neuroscience, nutrition, and mindfulness practices.</p>
+  </div>
+  <div class="service-card">
+    <span class="service-num">04</span>
+    <span class="service-icon">💧</span>
+    <div class="service-name">Cellular Hydration</div>
+    <p class="service-desc">Advanced hydration science beyond water — electrolyte balance at the cellular level.</p>
+  </div>
+  <div class="service-card">
+    <span class="service-num">05</span>
+    <span class="service-icon">🌙</span>
+    <div class="service-name">Sleep Architecture</div>
+    <p class="service-desc">Circadian rhythm optimization and sleep engineering for profound recovery and restoration.</p>
+  </div>
+  <div class="service-card">
+    <span class="service-num">06</span>
+    <span class="service-icon">🏃</span>
+    <div class="service-name">Movement Science</div>
+    <p class="service-desc">Biomechanical assessment and personalized movement programming for longevity and strength.</p>
+  </div>
+</div>
+
+<div class="divider" style="margin-top: 2px;"></div>
+
+<!-- 3D Feature Section -->
+<div class="feature-3d" id="science">
+  <div class="feature-visual">
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="cube-container">
+      <div class="cube-face front">❤️</div>
+      <div class="cube-face back">🧬</div>
+      <div class="cube-face left">⚡</div>
+      <div class="cube-face right">🧠</div>
+      <div class="cube-face top">🌿</div>
+      <div class="cube-face bottom">💫</div>
+    </div>
+  </div>
+  <div class="fade-up">
+    <div class="section-tag">/ The Science</div>
+    <h2 class="section-title">Precision<br><em>Health</em><br>at Scale</h2>
+    <p class="section-body">We fuse cutting-edge biometrics, AI-driven analysis, and ancient wellness wisdom to create protocols as unique as your fingerprint.</p>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <span class="feature-item-icon">🔬</span>
+        <div>
+          <div class="feature-item-title">Real-Time Biomarker Tracking</div>
+          <p class="feature-item-desc">Continuous monitoring of 12 key health indicators including HRV, cortisol, and inflammatory markers.</p>
+        </div>
+      </li>
+      <li class="feature-item">
+        <span class="feature-item-icon">🤖</span>
+        <div>
+          <div class="feature-item-title">AI Health Intelligence</div>
+          <p class="feature-item-desc">Machine learning models trained on 50,000+ health journeys to predict and prevent before symptoms arise.</p>
+        </div>
+      </li>
+      <li class="feature-item">
+        <span class="feature-item-icon">👨‍⚕️</span>
+        <div>
+          <div class="feature-item-title">Expert Human Guidance</div>
+          <p class="feature-item-desc">Every protocol reviewed and refined by our team of world-class physicians and longevity specialists.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Testimonials -->
+<section class="testimonials" id="testimonials">
+  <div class="fade-up">
+    <div class="section-tag">/ Transformation Stories</div>
+    <h2 class="section-title">Lives <em>Changed</em></h2>
+  </div>
+  <div class="testimonial-grid fade-up">
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">Within 8 weeks, my energy levels were unrecognizable. The genomic protocol they designed felt like it was written for my exact biology.</p>
+      <div class="quote-author">
+        <div class="author-avatar">🌸</div>
+        <div>
+          <div class="author-name">Aria Chen</div>
+          <div class="author-role">Entrepreneur, 34</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">I've tried every wellness program. Nothing came close to the precision of Vitalis. The sleep protocols alone transformed my cognitive output.</p>
+      <div class="quote-author">
+        <div class="author-avatar">⚡</div>
+        <div>
+          <div class="author-name">Marcus Webb</div>
+          <div class="author-role">Executive, 41</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">The biometric data combined with expert coaching gave me clarity I never had. I understand my body in a completely new dimension now.</p>
+      <div class="quote-author">
+        <div class="author-avatar">🧬</div>
+        <div>
+          <div class="author-name">Dr. Nadia Torres</div>
+          <div class="author-role">Physician, 38</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="section" id="pricing">
+  <div class="fade-up">
+    <div class="section-tag">/ Investment in Self</div>
+    <h2 class="section-title">Choose Your<br><em>Path</em></h2>
+  </div>
+  <div class="pricing-grid fade-up">
+    <div class="pricing-card">
+      <div class="plan-name">Foundations</div>
+      <div class="plan-price">$49</div>
+      <div class="plan-period">per month</div>
+      <ul class="plan-features">
+        <li class="plan-feature">Core biomarker tracking</li>
+        <li class="plan-feature">Nutrition protocol</li>
+        <li class="plan-feature">Movement programming</li>
+        <li class="plan-feature">Weekly progress reports</li>
+      </ul>
+      <button class="plan-btn">Get Started</button>
+    </div>
+    <div class="pricing-card featured">
+      <div class="plan-name">Precision</div>
+      <div class="plan-price">$129</div>
+      <div class="plan-period">per month</div>
+      <ul class="plan-features">
+        <li class="plan-feature">Everything in Foundations</li>
+        <li class="plan-feature">Genomic analysis</li>
+        <li class="plan-feature">AI health intelligence</li>
+        <li class="plan-feature">Sleep architecture program</li>
+        <li class="plan-feature">Monthly expert consult</li>
+      </ul>
+      <button class="plan-btn">Begin Transformation</button>
+    </div>
+    <div class="pricing-card">
+      <div class="plan-name">Sovereign</div>
+      <div class="plan-price">$349</div>
+      <div class="plan-period">per month</div>
+      <ul class="plan-features">
+        <li class="plan-feature">Everything in Precision</li>
+        <li class="plan-feature">Dedicated health concierge</li>
+        <li class="plan-feature">Weekly physician reviews</li>
+        <li class="plan-feature">Custom supplement design</li>
+        <li class="plan-feature">Priority lab processing</li>
+      </ul>
+      <button class="plan-btn">Apply Now</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section fade-up">
+  <div class="cta-bg"></div>
+  <div class="section-tag" style="justify-content:center;display:flex;">/ Your Moment is Now</div>
+  <h2 class="cta-title">
+    Begin Your<br><em>Transformation</em><br>Today
+  </h2>
+  <p class="section-body" style="margin: 0 auto 48px; text-align:center;">Join 50,000+ people who chose to live at the cutting edge of human health and longevity.</p>
+  <button class="btn-primary" style="font-size:13px; padding: 20px 56px;">Start Free Assessment →</button>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">VITALIS</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Science</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 Vitalis Health. All rights reserved.</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('button, a').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      ring.style.width = '60px';
+      ring.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '40px';
+      ring.style.height = '40px';
+    });
+  });
+
+  // 3D Canvas Background — particle field
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const particles = [];
+  const numParticles = 120;
+
+  for (let i = 0; i < numParticles; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      z: Math.random() * 2 + 0.5,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5,
+      pulse: Math.random() * Math.PI * 2,
+      color: Math.random() > 0.7 ? '#0099ff' : '#00f5c4'
+    });
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.pulse += 0.02;
+      const alpha = (Math.sin(p.pulse) * 0.3 + 0.4) * p.z * 0.5;
+
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * p.z, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+    });
+
+    // Draw connections
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = '#00f5c4';
+          ctx.globalAlpha = (1 - dist/120) * 0.07;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // Scroll animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Counter animation
+  function animateCounter(el, target) {
+    let current = 0;
+    const step = target / 60;
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        current = target;
+        clearInterval(interval);
+      }
+      el.textContent = Math.floor(current);
+    }, 20);
+  }
+
+  const statsObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('[data-target]').forEach(el => {
+          animateCounter(el, parseInt(el.dataset.target));
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsBar = document.querySelector('.stats-bar');
+  if (statsBar) statsObserver.observe(statsBar);
+
+  // 3D tilt on service cards
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(600px) rotateX(${-y*8}deg) rotateY(${x*8}deg) translateZ(10px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) translateZ(0)';
+    });
+  });
+
+  // Pricing card tilt
+  document.querySelectorAll('.pricing-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = `perspective(800px) rotateX(${-y*6}deg) rotateY(${x*6}deg) translateZ(8px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'none';
+    });
+  });
+</script>
+</body>
+</html>
